@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing Intelligence Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0a0a0a;
+      --paper: #f5f2eb;
+      --accent: #c8381c;
+      --muted: #6b6456;
+      --rule: #d8d2c7;
+      --card-bg: #ffffff;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      border-bottom: 3px solid var(--ink);
+      padding: 0 2rem;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 0 0.8rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .header-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .header-tagline {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .site-title {
+      text-align: center;
+      padding: 1.6rem 0 1.4rem;
+    }
+
+    .site-title h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .site-title h1 span {
+      color: var(--accent);
+    }
+
+    .site-title .subtitle {
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      font-weight: 400;
+    }
+
+    /* ── Nav ── */
+    nav {
+      display: flex;
+      gap: 2rem;
+      padding: 0.7rem 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    nav a {
+      color: var(--ink);
+      text-decoration: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 1px;
+      transition: border-color 0.15s;
+    }
+
+    nav a:hover, nav a.active { border-bottom-color: var(--accent); color: var(--accent); }
+
+    /* ── Layout ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* ── Post List ── */
+    #post-list { display: block; }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5px;
+      background: var(--ink);
+      border: 1.5px solid var(--ink);
+    }
+
+    .post-card {
+      background: var(--card-bg);
+      padding: 2rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .post-card:hover { background: var(--paper); }
+
+    .post-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .post-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .post-tag {
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.15em 0.5em;
+      font-weight: 500;
+    }
+
+    .post-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .post-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .read-more {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .read-more::after { content: '→'; }
+
+    /* ── Single Post ── */
+    #post-view { display: none; }
+
+    .back-btn {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 2.5rem;
+      border: none;
+      background: none;
+      padding: 0;
+      transition: color 0.15s;
+    }
+
+    .back-btn:hover { color: var(--ink); }
+    .back-btn::before { content: '←'; }
+
+    .post-header {
+      max-width: 720px;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1.5px solid var(--ink);
+    }
+
+    .post-header-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .post-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .post-body {
+      max-width: 680px;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: #1a1a1a;
+    }
+
+    .post-body p { margin-bottom: 1.4rem; }
+
+    .post-body h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 2.5rem 0 0.8rem;
+      letter-spacing: -0.01em;
+    }
+
+    .post-body h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin: 1.8rem 0 0.6rem;
+      letter-spacing: 0.02em;
+    }
+
+    .post-body strong { font-weight: 500; color: var(--ink); }
+
+    .post-body em { font-style: italic; color: var(--muted); }
+
+    .post-body ul, .post-body ol {
+      padding-left: 1.4rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .post-body li { margin-bottom: 0.4rem; }
+
+    /* ── Tags page ── */
+    #tags-view { display: none; }
+
+    .tags-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+
+    .tag-pill {
+      padding: 0.4rem 1rem;
+      border: 1.5px solid var(--ink);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .tag-pill:hover { background: var(--ink); color: var(--paper); }
+
+    /* ── About ── */
+    #about-view { display: none; }
+
+    .about-content {
+      max-width: 640px;
+    }
+
+    .about-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 1.2rem;
+    }
+
+    .about-content p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ── Loading ── */
+    .loading {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 3rem 0;
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 3px solid var(--ink);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.06em;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .post-grid { grid-template-columns: 1fr; }
+      .header-top { flex-direction: column; gap: 0.3rem; text-align: center; }
+      nav { gap: 1.2rem; flex-wrap: wrap; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <span class="header-date" id="header-date"></span>
+    <span class="header-tagline">Pricing intelligence for modern commerce</span>
+  </div>
+  <div class="site-title">
+    <h1>Pricing <span>Intelligence</span> Blog</h1>
+    <p class="subtitle">Insight · Strategy · Market Intelligence</p>
+  </div>
+  <nav>
+    <a onclick="showView('list')" class="active" id="nav-home">Latest</a>
+    <a onclick="showView('tags')" id="nav-tags">Topics</a>
+    <a onclick="showView('about')" id="nav-about">About</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- Post List -->
+  <div id="post-list">
+    <div class="section-label">Recent articles</div>
+    <div class="post-grid" id="post-grid">
+      <div class="loading">Loading posts…</div>
+    </div>
+  </div>
+
+  <!-- Single Post View -->
+  <div id="post-view">
+    <button class="back-btn" onclick="showView('list')">All articles</button>
+    <div id="post-content"></div>
+  </div>
+
+  <!-- Tags View -->
+  <div id="tags-view">
+    <div class="section-label">All topics</div>
+    <div class="tags-cloud" id="tags-cloud"></div>
+    <div style="margin-top:2.5rem;">
+      <div class="post-grid" id="tag-results"></div>
+    </div>
+  </div>
+
+  <!-- About View -->
+  <div id="about-view">
+    <div class="about-content">
+      <h2>About this blog</h2>
+      <p>Pricing Intelligence Blog covers pricing strategy, competitive intelligence, dynamic pricing, and market analysis for e-commerce and SaaS businesses.</p>
+      <p>Articles are published regularly and cover both tactical how-tos and big-picture strategic thinking around modern pricing.</p>
+      <p>This blog is part of an ongoing effort to make pricing intelligence accessible to growth-stage companies that can't yet afford enterprise tools.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>© 2026 Pricing Intelligence Blog</span>
+  <span id="post-count">—</span>
+</footer>
+
+<script>
+  // ── State ──
+  let allPosts = [];
+  let currentView = 'list';
+
+  // ── Init ──
+  document.getElementById('header-date').textContent =
+    new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  loadPosts();
+
+  async function loadPosts() {
+    try {
+      const indexRes = await fetch('posts/index.json');
+      const filenames = await indexRes.json();
+
+      const posts = await Promise.all(
+        filenames.map(async (f) => {
+          const res = await fetch(`posts/${f}`);
+          return res.json();
+        })
+      );
+
+      // Sort by date desc
+      allPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+      renderPostGrid(allPosts);
+      renderTagsCloud();
+      document.getElementById('post-count').textContent = `${allPosts.length} article${allPosts.length !== 1 ? 's' : ''} published`;
+    } catch (e) {
+      document.getElementById('post-grid').innerHTML =
+        '<div class="loading">Could not load posts. Make sure you\'re running a local server.</div>';
+    }
+  }
+
+  // ── Rendering ──
+  function renderPostGrid(posts) {
+    const grid = document.getElementById('post-grid');
+    if (!posts.length) {
+      grid.innerHTML = '<div class="loading">No posts yet.</div>';
+      return;
+    }
+    grid.innerHTML = posts.map(post => `
+      <div class="post-card" onclick="openPost('${post.id}')">
+        <div class="post-card-meta">
+          <span class="post-date">${formatDate(post.date)}</span>
+          ${post.tags?.[0] ? `<span class="post-tag">${post.tags[0]}</span>` : ''}
+        </div>
+        <h2>${post.title}</h2>
+        <p>${post.excerpt}</p>
+        <span class="read-more">Read article</span>
+      </div>
+    `).join('');
+  }
+
+  function renderTagsCloud() {
+    const allTags = [...new Set(allPosts.flatMap(p => p.tags || []))];
+    document.getElementById('tags-cloud').innerHTML = allTags.map(tag =>
+      `<div class="tag-pill" onclick="filterByTag('${tag}')">${tag}</div>`
+    ).join('');
+  }
+
+  function openPost(id) {
+    const post = allPosts.find(p => p.id === id);
+    if (!post) return;
+
+    document.getElementById('post-content').innerHTML = `
+      <div class="post-header">
+        <div class="post-header-meta">
+          <span class="post-date">${formatDate(post.date)}</span>
+          ${(post.tags || []).map(t => `<span class="post-tag">${t}</span>`).join('')}
+        </div>
+        <h1>${post.title}</h1>
+      </div>
+      <div class="post-body">${markdownToHtml(post.content)}</div>
+    `;
+
+    showView('post');
+    window.scrollTo(0, 0);
+  }
+
+  function filterByTag(tag) {
+    showView('tags');
+    const filtered = allPosts.filter(p => p.tags?.includes(tag));
+    document.getElementById('tag-results').innerHTML = filtered.map(post => `
+      <div class="post-card" onclick="openPost('${post.id}')">
+        <div class="post-card-meta">
+          <span class="post-date">${formatDate(post.date)}</span>
+        </div>
+        <h2>${post.title}</h2>
+        <p>${post.excerpt}</p>
+        <span class="read-more">Read article</span>
+      </div>
+    `).join('');
+  }
+
+  // ── Navigation ──
+  function showView(view) {
+    currentView = view;
+    ['post-list', 'post-view', 'tags-view', 'about-view'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    ['nav-home', 'nav-tags', 'nav-about'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+
+    const viewMap = {
+      list: 'post-list', post: 'post-view',
+      tags: 'tags-view', about: 'about-view'
+    };
+    const navMap = { list: 'nav-home', tags: 'nav-tags', about: 'nav-about' };
+
+    document.getElementById(viewMap[view]).style.display = 'block';
+    if (navMap[view]) document.getElementById(navMap[view]).classList.add('active');
+  }
+
+  // ── Helpers ──
+  function formatDate(dateStr) {
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric'
+    });
+  }
+
+  function markdownToHtml(md) {
+    return md
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>\n?)+/g, s => `<ul>${s}</ul>`)
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^(?!<[hul])(.+)/, '<p>$1')
+      .replace(/(.+)(?!>)$/, '$1</p>');
+  }
+</script>
+
+</body>
+</html>
